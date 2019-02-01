@@ -1,0 +1,54 @@
+html {
+    --element-size: 35;
+    --element-border: 2;
+}
+
+.neural-network {
+    text-align: center;
+    line-height: 100%;
+}
+
+.column {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.perceptron, .control {
+    margin: calc(var(--element-size) * 1px);
+    border: solid calc(var(--element-border) * 1px) black;
+    border-radius: calc(var(--element-size) * 1px);
+    width: calc(var(--element-size) * 1px);
+    height: calc(var(--element-size) * 1px);
+    line-height: calc(var(--element-size) * 1px);
+    text-align: center;
+    background-color: white;
+}
+
+.control {
+    border-color: gray;
+    color: gray;
+}
+
+.perceptron:hover{
+    cursor: help;
+}
+
+.control:hover, .input .perceptron:hover {
+    cursor: pointer;
+    border-color: black;
+    color: black;
+}
+
+.remove, .add {
+    border-style: dashed;
+}
+
+.line {
+    position: absolute;
+    border: solid calc(var(--element-border) * 1px) red;
+    z-index: 1;
+}
+
+.line:hover {
+    cursor: help;
+}
