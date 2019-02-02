@@ -1,6 +1,7 @@
-function column(layer) {
+function column(layer, index) {
   const column = document.createElement('div');
   column.classList.add('column');
+  column.setAttribute('index', index);
   column.appendChild(control('remove'));
   if (layer) column.appendChild(layer);
   column.appendChild(control('add'));
@@ -10,6 +11,7 @@ function column(layer) {
 function control(type) {
   const control = document.createElement('div');
   control.classList.add('control');
+  control.classList.add('perceptron');
   control.classList.add(type);
   control.textContent = (type === 'add') ? '+' : '-';
   return control;

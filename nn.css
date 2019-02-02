@@ -8,7 +8,7 @@ html {
     line-height: 100%;
 }
 
-.column {
+.layers, .column {
     display: inline-block;
     vertical-align: middle;
 }
@@ -29,7 +29,7 @@ html {
     color: gray;
 }
 
-.perceptron:hover{
+.perceptron:hover {
     cursor: help;
 }
 
