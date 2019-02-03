@@ -23,11 +23,24 @@ interfaceElement.addEventListener('click', interfaceActions);
 controlElement.addEventListener('click', controlActions);
 memoryCheck();
 
-
 function initializeGUI() {
   getLayersConditions();
   initializePerceptrons();
   initializeLines();
+}
+
+function reinitialize() {
+  models = initializeModel(layersInitConfig);
+  clearGUI();
+  initializeGUI();
+  memoryCheck();
+}
+
+function reDrawGUI() {
+  clearGUI();
+  initializeGUI();
+  memoryCheck();
+  hideControlButtons();
 }
 
 function clearGUI() {
@@ -39,11 +52,13 @@ function initializePerceptrons() {
     layersPerceptons[index] = createPerceptrons(layersInitConfig[index].units);
     if (index === 0) {
       layersPerceptons[index]
-        .forEach((preceptron, index) =>
+        .forEach((perceptron, index) => {
+          switchInput(perceptron, index);
           setPerceptronCondition(
-            preceptron,
+            perceptron,
             inputInit[index]
-          ));
+          );
+        });
     } else {
       setPerceptronsCondition(
         layersPerceptons[index],
@@ -87,7 +102,9 @@ function getLayersConditions() {
   for (let index = 0; index < layersInitConfig.length - 1; index++) {
     layersWeights[index] = models[models.length - 1].layers[index + 1].getWeights()[0].dataSync();
     layersBiases[index] = models[models.length - 1].layers[index + 1].getWeights()[1].dataSync();
-    layersPredicts[index] = models[index].predict(tf.tensor2d([inputInit])).dataSync();
+    const tensor = tf.tensor2d([inputInit]);
+    layersPredicts[index] = models[index].predict(tensor).dataSync();
+    tensor.dispose();
   }
 }
 
@@ -147,13 +164,6 @@ function removePerceptron() {
   reinitialize();
 }
 
-function reinitialize() {
-  models = initializeModel(layersInitConfig);
-  clearGUI();
-  initializeGUI();
-  memoryCheck();
-}
-
 function memoryCheck() {
   console.log('numTensors (outside tidy): ' + tf.memory().numTensors);
 }
@@ -171,4 +181,12 @@ function switchControlVisibility() {
   controls.forEach(element => element.style.visibility === 'hidden' ? element.style.visibility = 'visible' : element.style.visibility = 'hidden');
   const train = controlElement.querySelector('.train');
   train.style.display === 'block' ? train.style.display = 'none' : train.style.display = 'block';
+}
+
+function switchInput(element, index) {
+  element.addEventListener('click', () => {
+    element.textContent = Math.abs(element.textContent - 1);
+    inputInit[index] = +element.textContent;
+    reDrawGUI();
+  });
 }

@@ -22,9 +22,7 @@ function layer(perceptrons, type) {
   layer.classList.add('layer');
   if (type) layer.classList.add(type);
   // if (type === 'input' || type === 'output')
-  if (type === 'input')
-    perceptrons.forEach(perceptron => perceptron.textContent = Math.round(perceptron.textContent));
-  if (type === 'input') perceptrons.forEach(perceptron => switchInput(perceptron));
+  if (type === 'input') perceptrons.forEach(perceptron => perceptron.textContent = Math.round(perceptron.textContent));
   perceptrons.forEach(perceptron => layer.appendChild(perceptron));
   return layer;
 }
@@ -46,10 +44,11 @@ function perceptron() {
 function setPerceptronCondition(perceptron, predict, bias, weights, optimizer) {
   perceptron.textContent = predict.toFixed(2);
   perceptron.style.backgroundColor = rgb(predict);
-  // console.log(Array.from(Array.from(weights)));
   if (weights) {
     let weight = weights ? Array.from(weights).map((weight, index) => `${weight.toFixed(2)}W${index}`).join(' + ') : '';
     perceptron.title = `${optimizer} ( ${weight} + ${bias.toFixed(2)}B ) = ${predict.toFixed(2)}P`;
+  }else{
+    perceptron.title =`${predict} `
   }
 }
 
@@ -94,6 +93,3 @@ function rgb(value) {
   if (value < 0) return `rgb(255, ${255 + 255 * value}, 0)`;
 }
 
-function switchInput(element) {
-  element.addEventListener('click', () => element.textContent = Math.abs(element.textContent - 1));
-}
