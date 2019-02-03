@@ -46,6 +46,7 @@ function perceptron() {
 function setPerceptronCondition(perceptron, predict, bias, weights, optimizer) {
   perceptron.textContent = predict.toFixed(2);
   perceptron.style.backgroundColor = rgb(predict);
+  // console.log(Array.from(Array.from(weights)));
   if (weights) {
     let weight = weights ? Array.from(weights).map((weight, index) => `${weight.toFixed(2)}W${index}`).join(' + ') : '';
     perceptron.title = `${optimizer} ( ${weight} + ${bias.toFixed(2)}B ) = ${predict.toFixed(2)}P`;

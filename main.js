@@ -1,3 +1,4 @@
+const interfaceElement = document.querySelector('.interface');
 const controlElement = document.querySelector('.neural-network');
 const neuralNetworkElement = document.querySelector('.neural-network .layers');
 
@@ -17,6 +18,8 @@ let inputInit = [rnd(), rnd()];
 let models = initializeModel(layersInitConfig);
 
 initializeGUI();
+hideControlButtons();
+interfaceElement.addEventListener('click', interfaceActions);
 controlElement.addEventListener('click', controlActions);
 memoryCheck();
 
@@ -63,7 +66,7 @@ function setPerceptronsCondition(layerPerceptons, layerPredicts, layerBiases, la
       layerPredicts[index],
       layerBiases[index],
       layerWeights
-        .filter((weight, numb) => (preceptron.length - numb + index) % preceptron.length === 0),
+        .filter((weight, numb) => (layerPerceptons.length - numb + index) % layerPerceptons.length === 0),
       layerInitConfig.activation
     ));
 }
@@ -92,32 +95,31 @@ function rnd() {
   return Math.round(Math.random());
 }
 
+function interfaceActions(event) {
+
+}
+
 function controlActions(event) {
   if (event.target.classList.contains('control')) {
+
+    if (event.target.classList.contains('edit')) switchControlVisibility();
+
     if (event.target.classList.contains('perceptron')) {
-      if (event.target.classList.contains('add')) {
-        addPerceptron();
-      }
+      if (event.target.classList.contains('add')) addPerceptron();
       if (event.target.classList.contains('remove')) {
-        if (layersInitConfig[event.target.parentElement.getAttribute('index')].units > 1) {
-          removePerceptron();
-        } else {
-          alert('Can not remove last perceptron.\nLayer must contain at least one perceptron.');
-        }
+        if (layersInitConfig[event.target.parentElement.getAttribute('index')].units > 1) removePerceptron();
+        else alert('Can not remove last perceptron.\nLayer must contain at least one perceptron.');
       }
     }
+
     if (event.target.classList.contains('layer')) {
-      if (event.target.classList.contains('add')) {
-        addLayer();
-      }
+      if (event.target.classList.contains('add')) addLayer();
       if (event.target.classList.contains('remove')) {
-        if (layersInitConfig.length > 3) {
-          removeLayer();
-        } else {
-          alert('Can not remove layer.\nNeural network must contain at least one input, one hidden and one output layers.');
-        }
+        if (layersInitConfig.length > 3) removeLayer();
+        else alert('Can not remove layer.\nNeural network must contain at least one input, one hidden and one output layers.');
       }
     }
+
   }
 }
 
@@ -154,4 +156,19 @@ function reinitialize() {
 
 function memoryCheck() {
   console.log('numTensors (outside tidy): ' + tf.memory().numTensors);
+}
+
+function hideControlButtons() {
+  Array.from(controlElement.querySelectorAll('.control'))
+    .filter(element => element.classList.contains('add') || element.classList.contains('remove'))
+    .forEach(element => element.style.visibility = 'hidden');
+  controlElement.querySelector('.train').style.display = 'block';
+}
+
+function switchControlVisibility() {
+  const controls = Array.from(controlElement.querySelectorAll('.control'))
+    .filter(element => element.classList.contains('add') || element.classList.contains('remove'));
+  controls.forEach(element => element.style.visibility === 'hidden' ? element.style.visibility = 'visible' : element.style.visibility = 'hidden');
+  const train = controlElement.querySelector('.train');
+  train.style.display === 'block' ? train.style.display = 'none' : train.style.display = 'block';
 }
