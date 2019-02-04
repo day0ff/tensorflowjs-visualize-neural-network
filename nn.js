@@ -9,13 +9,18 @@ function initializeModel(layers_size) {
       else outputs[index - 1] = layers[index].apply(outputs[index - 2]);
     }
   }
-  const optimizer = tf.train.adam(0.5);
+  const optimizer = tf.train.adam(0.2);
   const loss = tf.losses.meanSquaredError;
 
   const model = tf.model({inputs: layers[0], outputs: outputs[outputs.length - 1]});
   model.compile({optimizer: optimizer, loss: loss});
   for (let index = 0; index < outputs.length; index++) {
-    models[index] = tf.model({inputs: model.input, outputs: model.layers[index + 1].output});
+    if (index < outputs.length - 1) {
+      models[index] = tf.model({inputs: model.input, outputs: model.layers[index + 1].output});
+    }
+    else {
+      models[index] = model;
+    }
   }
   return models;
 }
@@ -32,3 +37,31 @@ function setOutputLayer(units, activation) {
   return tf.layers.dense({units: units, activation: activation});
 }
 
+function predict(model) {
+  const tensor = tf.tensor2d([inputInit]);
+  const predict = model.predict(tensor).dataSync();
+  tensor.dispose();
+  return predict;
+}
+
+async function trainModel(model) {
+  const inputTensors = tf.tensor2d([[1, 1], [1, 0], [0, 1], [0, 0]]);
+  const outputTensors = tf.tensor2d([[1], [0], [0], [1]]);
+  const fit = await model.fit(inputTensors, outputTensors, {
+    batchSize: 4,
+    epochs: 1,
+    shuffle: true
+  });
+  inputTensors.dispose();
+  outputTensors.dispose();
+  return fit;
+}
+
+async function trainModelOnce(model, inputs, outputs) {
+  const inputTensors = tf.tensor2d([inputs]);
+  const outputTensors = tf.tensor2d([outputs.map(output => +output.textContent)]);
+  const fit = await model.fit(inputTensors, outputTensors);
+  inputTensors.dispose();
+  outputTensors.dispose();
+  return fit;
+}

@@ -60,6 +60,12 @@ function initializePerceptrons() {
           );
         });
     } else {
+      if (index === layersInitConfig.length - 1) {
+        layersPerceptons[index]
+          .forEach((perceptron, index) =>
+            switchOutput(perceptron, index)
+          );
+      }
       setPerceptronsCondition(
         layersPerceptons[index],
         layersPredicts[index - 1],
@@ -102,9 +108,7 @@ function getLayersConditions() {
   for (let index = 0; index < layersInitConfig.length - 1; index++) {
     layersWeights[index] = models[models.length - 1].layers[index + 1].getWeights()[0].dataSync();
     layersBiases[index] = models[models.length - 1].layers[index + 1].getWeights()[1].dataSync();
-    const tensor = tf.tensor2d([inputInit]);
-    layersPredicts[index] = models[index].predict(tensor).dataSync();
-    tensor.dispose();
+    layersPredicts[index] = predict(models[index]);
   }
 }
 
@@ -113,13 +117,15 @@ function rnd() {
 }
 
 function interfaceActions(event) {
-
+  if (event.target.classList.contains('train')) train();
 }
 
 function controlActions(event) {
   if (event.target.classList.contains('control')) {
 
     if (event.target.classList.contains('edit')) switchControlVisibility();
+
+    if (event.target.classList.contains('train')) trainOnce();
 
     if (event.target.classList.contains('perceptron')) {
       if (event.target.classList.contains('add')) addPerceptron();
@@ -183,10 +189,32 @@ function switchControlVisibility() {
   train.style.display === 'block' ? train.style.display = 'none' : train.style.display = 'block';
 }
 
+async function train() {
+  const fit = await trainModel(models[models.length - 1]);
+  document.querySelector('.loss span').textContent = fit.history.loss[fit.history.loss.length - 1].toFixed(2);
+  document.querySelector('.epochs span').textContent = +document.querySelector('.epochs span').textContent + fit.epoch[fit.epoch.length - 1] + 1;
+  reDrawGUI();
+  return;
+}
+
+async function trainOnce() {
+  const outputs = layersPerceptons[layersPerceptons.length - 1];
+  const fit = await trainModelOnce(models[models.length - 1], inputInit, outputs);
+  document.querySelector('.loss span').textContent = fit.history.loss[fit.history.loss.length - 1].toFixed(2);
+  reDrawGUI();
+}
+
 function switchInput(element, index) {
   element.addEventListener('click', () => {
-    element.textContent = Math.abs(element.textContent - 1);
+    element.textContent = Math.abs(+element.textContent - 1);
     inputInit[index] = +element.textContent;
     reDrawGUI();
+  });
+}
+
+function switchOutput(element, index) {
+  element.addEventListener('click', () => {
+    element.textContent = Math.abs(+element.textContent - 1);
+    layersPerceptons[layersPerceptons.length - 1][index].textContent = +element.textContent;
   });
 }

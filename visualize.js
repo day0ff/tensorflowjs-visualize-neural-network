@@ -21,8 +21,7 @@ function layer(perceptrons, type) {
   const layer = document.createElement('div');
   layer.classList.add('layer');
   if (type) layer.classList.add(type);
-  // if (type === 'input' || type === 'output')
-  if (type === 'input') perceptrons.forEach(perceptron => perceptron.textContent = Math.round(perceptron.textContent));
+  if (type === 'input' || type === 'output') perceptrons.forEach(perceptron => perceptron.textContent = Math.round(perceptron.textContent));
   perceptrons.forEach(perceptron => layer.appendChild(perceptron));
   return layer;
 }
@@ -47,8 +46,8 @@ function setPerceptronCondition(perceptron, predict, bias, weights, optimizer) {
   if (weights) {
     let weight = weights ? Array.from(weights).map((weight, index) => `${weight.toFixed(2)}W${index}`).join(' + ') : '';
     perceptron.title = `${optimizer} ( ${weight} + ${bias.toFixed(2)}B ) = ${predict.toFixed(2)}P`;
-  }else{
-    perceptron.title =`${predict} `
+  } else {
+    perceptron.title = `${predict} `
   }
 }
 
