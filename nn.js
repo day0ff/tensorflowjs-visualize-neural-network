@@ -44,12 +44,12 @@ function predict(model) {
   return predict;
 }
 
-async function trainModel(model) {
+async function trainModel(model, times = 1) {
   const inputTensors = tf.tensor2d([[1, 1], [1, 0], [0, 1], [0, 0]]);
   const outputTensors = tf.tensor2d([[1], [0], [0], [1]]);
   const fit = await model.fit(inputTensors, outputTensors, {
     batchSize: 4,
-    epochs: 1,
+    epochs: times,
     shuffle: true
   });
   inputTensors.dispose();

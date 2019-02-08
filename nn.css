@@ -87,3 +87,23 @@ body {
 .line:hover {
     cursor: help;
 }
+
+.drop-dawn {
+    position: relative;
+    display: inline-block;
+}
+
+.drop-dawn-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.drop-dawn:hover .drop-dawn-content {
+    display: block;
+}
+
+.drop-dawn-content .information {
+    margin: calc(var(--element-size)/2 * 1px) 0 0;
+    border-style: dashed;
+}

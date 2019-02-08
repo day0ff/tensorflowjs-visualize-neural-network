@@ -117,7 +117,8 @@ function rnd() {
 }
 
 function interfaceActions(event) {
-  if (event.target.classList.contains('train')) train();
+  if (event.target.classList.contains('once')) train();
+  if (event.target.classList.contains('train')) train(10);
 }
 
 function controlActions(event) {
@@ -189,8 +190,8 @@ function switchControlVisibility() {
   train.style.display === 'block' ? train.style.display = 'none' : train.style.display = 'block';
 }
 
-async function train() {
-  const fit = await trainModel(models[models.length - 1]);
+async function train(times) {
+  const fit = await trainModel(models[models.length - 1], times);
   document.querySelector('.loss span').textContent = fit.history.loss[fit.history.loss.length - 1].toFixed(2);
   document.querySelector('.epochs span').textContent = +document.querySelector('.epochs span').textContent + fit.epoch[fit.epoch.length - 1] + 1;
   reDrawGUI();
