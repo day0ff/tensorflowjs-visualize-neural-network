@@ -9,11 +9,9 @@ function initializeModel(layers_size) {
       else outputs[index - 1] = layers[index].apply(outputs[index - 2]);
     }
   }
-  const optimizer = tf.train.adam(0.2);
-  const loss = tf.losses.meanSquaredError;
 
   const model = tf.model({inputs: layers[0], outputs: outputs[outputs.length - 1]});
-  model.compile({optimizer: optimizer, loss: loss});
+  compile(model);
   for (let index = 0; index < outputs.length; index++) {
     if (index < outputs.length - 1) {
       models[index] = tf.model({inputs: model.input, outputs: model.layers[index + 1].output});
@@ -35,6 +33,12 @@ function setHiddenLayer(units, activation) {
 
 function setOutputLayer(units, activation) {
   return tf.layers.dense({units: units, activation: activation});
+}
+
+function compile(model){
+  const optimizer = tf.train.adam(0.2);
+  const loss = tf.losses.meanSquaredError;
+  model.compile({optimizer: optimizer, loss: loss});
 }
 
 function predict(model) {

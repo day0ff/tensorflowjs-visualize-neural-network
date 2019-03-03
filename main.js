@@ -223,6 +223,7 @@ async function loadLocal() {
   let index = 0;
   while (await !!localStorage.getItem(`tensorflowjs_models/model-${index}/info`)) {
     const model = await tf.loadModel(`localstorage://model-${index}`);
+    compile(model);
     models.push(model);
     index++;
   }
@@ -242,6 +243,7 @@ function loadFiles() {
     let index = 0;
     while (index < files.length) {
       const model = await tf.loadModel(tf.io.browserFiles([files[index], files[index + 1]]));
+      compile(model);
       models.push(model);
       index += 2;
     }
