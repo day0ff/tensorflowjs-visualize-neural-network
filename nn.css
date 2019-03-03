@@ -44,6 +44,12 @@ body {
     width: calc(var(--element-size) * 2px);
 }
 
+.information.bottom {
+    margin-bottom: 0;
+    display: inline-block;
+    width: calc(var(--element-size) * 4px);
+}
+
 .perceptron:hover {
     cursor: help;
 }
@@ -104,6 +110,10 @@ body {
 }
 
 .drop-dawn-content .information {
-    margin: calc(var(--element-size)/2 * 1px) 0 0;
+    margin: calc(var(--element-size) / 2 * 1px) 0 0;
     border-style: dashed;
+}
+
+#files {
+    display: none;
 }

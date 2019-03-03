@@ -1,5 +1,6 @@
 const interfaceElement = document.querySelector('.interface');
 const controlElement = document.querySelector('.neural-network');
+const interfaceBottomElement = document.querySelectorAll('.interface')[1];
 const neuralNetworkElement = document.querySelector('.neural-network .layers');
 
 let layersWeights = [],
@@ -21,6 +22,7 @@ initializeGUI();
 hideControlButtons();
 interfaceElement.addEventListener('click', interfaceActions);
 controlElement.addEventListener('click', controlActions);
+interfaceBottomElement.addEventListener('click', interfaceBottomActions);
 memoryCheck();
 
 function initializeGUI() {
@@ -121,6 +123,13 @@ function interfaceActions(event) {
   if (event.target.classList.contains('train')) train(10);
 }
 
+function interfaceBottomActions(event) {
+  if (event.target.classList.contains('save-local')) saveLocal();
+  if (event.target.classList.contains('load-local')) loadLocal();
+  if (event.target.classList.contains('save-file')) saveFiles();
+  if (event.target.classList.contains('load-file')) loadFiles();
+}
+
 function controlActions(event) {
   if (event.target.classList.contains('control')) {
 
@@ -204,6 +213,42 @@ async function trainOnce() {
   document.querySelector('.loss span').textContent = fit.history.loss[fit.history.loss.length - 1].toFixed(2);
   reDrawGUI();
 }
+
+function saveLocal() {
+  models.forEach(async (model, index) => await model.save(`localstorage://model-${index}`));
+}
+
+async function loadLocal() {
+  models = [];
+  let index = 0;
+  while (await !!localStorage.getItem(`tensorflowjs_models/model-${index}/info`)) {
+    const model = await tf.loadModel(`localstorage://model-${index}`);
+    models.push(model);
+    index++;
+  }
+  reDrawGUI();
+}
+
+function saveFiles() {
+  models.forEach(async (model, index) => await model.save(`downloads://model-${index}`));
+}
+
+function loadFiles() {
+  const filesElement = document.getElementById('files');
+  filesElement.click();
+  filesElement.onchange = async () => {
+    const files = filesElement.files;
+    models = [];
+    let index = 0;
+    while (index < files.length) {
+      const model = await tf.loadModel(tf.io.browserFiles([files[index], files[index + 1]]));
+      models.push(model);
+      index += 2;
+    }
+    reDrawGUI();
+  };
+}
+
 
 function switchInput(element, index) {
   element.addEventListener('click', () => {
